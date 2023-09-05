@@ -27,6 +27,8 @@ public:
 
 	void rotate(Vector3 amount);
 
+	void resetRotation();
+
 	void draw(sf::RenderWindow &window, Vector3 cameraPos);
 };
 

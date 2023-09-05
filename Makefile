@@ -1,44 +1,21 @@
-CC=g++
+CXX := g++
+CXXFLAGS := -Wall -Wextra -pedantic -std=c++17
+LDFLAGS := -lsfml-graphics -lsfml-window -lsfml-system
 
-CFLAGS=-c -Wall -Wno-unknown-pragmas
+SRCDIR := src
+OBJDIR := obj
+BINDIR := bin
 
-SOURCE_FILES = main.cpp
+SRCS := $(wildcard $(SRCDIR)/*.cpp)
+OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-INCLUDE_DIRECTORIES = ./include/ C:/Libraries/SFML-2.5.1/include/
-LIB_DIRECTORIES = C:/Libraries/SFML-2.5.1/lib/
+all: 3dcube
 
-LIBS = sfml-graphics-d sfml-window-d sfml-system-d sfml-main-d sfml-audio-d sfml-network-d openal32
+3dcube: $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $(BINDIR)/$@ $(LDFLAGS)
 
-# The rest is voodoo
-SOURCE_FILES := $(addprefix src/,$(SOURCE_FILES))
-
-OBJECT_FILES = $(SOURCE_FILES:src/%.cpp=obj/%.o)
-OBJECT_DIR = $(sort $(dir $(OBJECT_FILES)))
-OBJECT_DIR := $(OBJECT_DIR:/=)
-
-INCLUDE_DIRECTORIES := $(addprefix -I,$(INCLUDE_DIRECTORIES))
-LIB_DIRECTORIES := $(addprefix -L,$(LIB_DIRECTORIES))
-
-LIBS := $(addprefix -l,$(LIBS))
-
-.PHONY: directories
-
-all: directories prog
-	@echo Launching app...
-	@./bin/main.exe
-
-prog: $(OBJECT_FILES)
-	@$(CC) -o bin/main.exe $^ $(LIB_DIRECTORIES) $(LIBS)
-
-obj/%.o: src/%.cpp
-	@echo Compiling $<
-	$(CC) $(CFLAGS) -o $@ $< $(INCLUDE_DIRECTORIES)
-
-directories: $(OBJECT_DIR)
-
-$(OBJECT_DIR):
-	powershell md $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -Iinclude -c $< -o $@
 
 clean:
-	powershell rm -r ./obj/*.o
-	@powershell clear
+	rm -f $(OBJDIR)/*.o $(BINDIR)/3dcube

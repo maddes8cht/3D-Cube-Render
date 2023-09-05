@@ -73,6 +73,10 @@ void Cube::rotate(Vector3 amount)
 	this->buildVertices();
 }
 
+void Cube::resetRotation() {
+    rotation = Vector3(0.0f, 0.0f, 0.0f);
+}
+
 void Cube::draw(sf::RenderWindow &window, Vector3 cameraPos)
 {
 	sf::Vector2f vectors[9];
